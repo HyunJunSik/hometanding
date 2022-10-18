@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "303856841735",
+    "project_id": "hometending-0203",
+    "storage_bucket": "hometending-0203.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303856841735:android:fcfd082270cb46a86126a2",
+        "android_client_info": {
+          "package_name": "com.example.hometanding"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303856841735-nq9577teng17j3dbqilnj9n9isve6uqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0YjS3g0RwbhRMLrLIyG9woO8bIowDYRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303856841735-nq9577teng17j3dbqilnj9n9isve6uqa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
