@@ -52,10 +52,10 @@ class _HomeState extends State<Home> {
   classifyImage(File image) async {
     var output = await Tflite.runModelOnImage(
         path: image.path,
-        numResults: 4,
+        numResults: 10,
         threshold: 0.5,
-        imageMean: 127.5,
-        imageStd: 127.5);
+        imageMean: 0.0,
+        imageStd: 255.0);
     setState(() {
       _loading = false;
       _output = output;
@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
 
   loadModel() async {
     await Tflite.loadModel(
-      model: 'assets/model_unquant.tflite',
+      model: 'assets/beer_model.tflite',
       labels: 'assets/labels.txt',
     );
   }
@@ -115,7 +115,7 @@ class _HomeState extends State<Home> {
                             ? Container(
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                  '${_output[0]['label'][0]}',
+                                  '${_output[0]['label']}',
                                   style: TextStyle(
                                       color: Colors.red, fontSize: 20.0),
                                 ))
