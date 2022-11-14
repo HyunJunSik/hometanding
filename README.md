@@ -8,7 +8,7 @@ Application Dev. Hyeon Jin Jeong.
 
 This project is a starting point for a Flutter application.
 
-Let's see is lib directory.
+Let's see in lib directory.
 
 You can see codes about every screens.
 
