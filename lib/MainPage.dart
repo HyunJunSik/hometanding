@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hometanding/Favour.dart';
 import 'package:hometanding/main.dart';
 import 'package:hometanding/setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'detail.dart';
 import 'home.dart';
@@ -11,7 +13,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage();
+  final int num;
+  final int num2;
+  const MainPage(this.num, this.num2);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -36,15 +40,14 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     _loading = true;
     loadModel().then((value) {});
-    var todayBeer =
-        Random().nextInt(beer.length); //추후, splash screen에서 random 설정
+    var todayBeer = widget.num; //추후, splash screen에서 random 설정
     today_beer_name = beer[todayBeer]['name'];
     today_beer_dis = beer[todayBeer]['dis'];
     today_beer_alcohol = beer[todayBeer]['alcohol'];
     today_beer_image = beer[todayBeer]['image'];
     today_beer_type = beer[todayBeer]['type'];
 
-    var todayWise = Random().nextInt(Wise.length);
+    var todayWise = widget.num2;
     today_wise = Wise[todayWise]['wise'];
     today_name = Wise[todayWise]['name'];
 
@@ -351,7 +354,7 @@ class _MainPageState extends State<MainPage> {
                                 width: 180, height: 180),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Home()));
+                                  builder: (context) => favourite()));
                             },
                           ),
                         ],

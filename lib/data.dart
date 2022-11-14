@@ -139,18 +139,3 @@ List<Map> Wise = [
     'name': '에이브러햄 링컨'
   },
 ];
-
-class Todo {
-  int idx;
-
-  Todo({this.idx}) {
-    idx = this.idx;
-  }
-  toJson() {
-    return {"idx": idx};
-  }
-
-  fromJson(jsonData) {
-    return {idx: jsonData['idx']};
-  }
-}

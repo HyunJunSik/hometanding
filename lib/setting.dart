@@ -16,6 +16,14 @@ class setting extends StatelessWidget {
             SizedBox(height: 20),
             Text("소프트웨어 공학 8조", style: TextStyle(fontSize: 30)),
             SizedBox(height: 20),
+            ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 20,
+                  minWidth: 20,
+                  maxHeight: 150,
+                  maxWidth: 150,
+                ),
+                child: Image.asset('assets/mainicon.png')),
             Text("프로젝트 : 알콜위키", style: TextStyle(fontSize: 20)),
             TextButton(
               child: Text("click me if you want to see code",

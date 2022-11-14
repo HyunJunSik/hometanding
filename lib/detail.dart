@@ -16,13 +16,30 @@ class detail extends StatefulWidget {
 //내부에서 widget.data로 접근가능
 // Text("${beer[widget.data]['name']}")
 class _detailState extends State<detail> {
-  Icon fav = Icon(Icons.star_outline_outlined, color: Colors.yellow);
-  int num = 0;
-
+  Icon fav = Icon(Icons.star, color: Colors.yellow);
+  int num = 1;
+  SharedPreferences _prefs;
   @override
   void initState() {
     // TODO: implement initState
+    _load();
     super.initState();
+  }
+
+  _load() async {
+    _prefs = await SharedPreferences.getInstance();
+    var key = _prefs.getInt("${widget.data}") ?? -1;
+    if (key == -1) {
+      setState(() {
+        fav = Icon(Icons.star_outline_outlined, color: Colors.yellow);
+        int num = 1;
+      });
+    } else {
+      setState(() {
+        fav = Icon(Icons.star, color: Colors.yellow);
+        int num = 0;
+      });
+    }
   }
 
   @override
@@ -75,9 +92,11 @@ class _detailState extends State<detail> {
                         fav = Icon(Icons.star_outline_outlined,
                             color: Colors.yellow);
                         num = 1;
+                        _prefs.remove("${widget.data}");
                       } else {
                         fav = Icon(Icons.star, color: Colors.yellow);
                         num = 0;
+                        _prefs.setInt("${widget.data}", widget.data);
                       }
                     }),
                     icon: fav,

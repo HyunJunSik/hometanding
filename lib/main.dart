@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hometanding/search_alcohol.dart';
@@ -9,6 +10,8 @@ import 'data.dart';
 import 'home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+var todayBeer = Random().nextInt(beer.length);
+var todayWise = Random().nextInt(Wise.length);
 void main() {
   runApp(MaterialApp(
     home: Splash(),
@@ -38,7 +41,7 @@ class MainState extends State<Main> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    MainPage(),
+    MainPage(todayBeer, todayWise),
     Alcohol(),
     search_snack(),
   ];
