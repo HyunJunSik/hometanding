@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hometanding/search_alcohol.dart';
 import 'package:hometanding/search_snack.dart';
 import 'MainPage.dart';
 import 'Splash_screen.dart';
+import 'data.dart';
 import 'home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,9 +36,10 @@ class Main extends StatefulWidget {
 
 class MainState extends State<Main> {
   int _selectedIndex = 0;
+
   static List<Widget> pages = <Widget>[
     MainPage(),
-    search_alcohol(),
+    Alcohol(),
     search_snack(),
   ];
 
@@ -58,7 +62,7 @@ class MainState extends State<Main> {
         selectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: '알콜사전'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: '알콜사전'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: '안주사전'),
         ],
         currentIndex: _selectedIndex,

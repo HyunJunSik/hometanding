@@ -1,86 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:hometanding/main.dart';
+import 'package:hometanding/setting.dart';
 import 'dart:math';
+import 'detail.dart';
 import 'home.dart';
-
-List<Map> beer = [
-  {
-    'name': 'beer1',
-    'dis': "이 맥주는 영국에서부터 나와서 이러쿵저러쿵 샬라샬라 하게되었습니다. 아라라라라라라라라",
-    'alcohol': 'alcohol1',
-    'image': 'assets/maek.jpg'
-  },
-  {
-    'name': 'beer2',
-    'dis': '이 맥주는 영국에서부터 나와서 이러쿵저러쿵 샬라샬라 하게되었습니다. 아라라라라라라라라',
-    'alcohol': 'alcohol2',
-    'image': 'assets/maek.jpg'
-  },
-  {
-    'name': 'beer3',
-    'dis': '이 맥주는 영국에서부터 나와서 이러쿵저러쿵 샬라샬라 하게되었습니다. 아라라라라라라라라',
-    'alcohol': 'alcohol3',
-    'image': 'assets/maek.jpg'
-  },
-  {
-    'name': 'beer4',
-    'dis': '이 맥주는 영국에서부터 나와서 이러쿵저러쿵 샬라샬라 하게되었습니다. 아라라라라라라라라',
-    'alcohol': 'alcohol4',
-    'image': 'assets/maek.jpg'
-  },
-  {
-    'name': 'beer5',
-    'dis': '이 맥주는 영국에서부터 나와서 이러쿵저러쿵 샬라샬라 하게되었습니다. 아라라라라라라라라',
-    'alcohol': 'alcohol5',
-    'image': 'assets/maek.jpg'
-  }
-];
-
-List<Map> Wise = [
-  {
-    'wise':
-        '맥주를 마시는 자는 잠자리에 빨리 든다. 잠을 많이 자는 자는 죄를 짓지 않는다. 죄를 짓지 않는 자는 천국에 입성한다. 그러니, 우리 모두 맥주를 마시다!',
-    'name': '마르틴 루터'
-  },
-  {'wise': '술은 우리가 삶의 움직임을 이겨내는 마취제이다.', 'name': '조지 버나드 쇼'},
-  {'wise': '맥주는 신께서 우리를 사랑하시고 우리가 행복하길 원하신다는 증거다. ', 'name': '벤자민 프랭클린'},
-  {'wise': '나는 다른 사람들에게 흥미를 갖기 위해 술을 마신다.', 'name': '어니스트 헤밍웨이'},
-  {'wise': '술은 인간 최대의 적일지도 모르나, 성경에서 적을 사랑하라 하셨습니다.', 'name': '프랭크 시나트라'},
-  {'wise': '지혜로운 사람은 종종 멍청이들과 어울리기 위해 술을 마셔야 한다.', 'name': '어니스트 헤밍웨이'},
-  {
-    'wise':
-        '나는 치통 예방 차원에서 매일 밤 스카치 위스키를 마십니다. 나는 치통을 한 번도 앓은 적이 없고, 앓을 생각도 없습니다.',
-    'name': '마크 트웨인'
-  },
-  {
-    'wise':
-        '나는 사람들을 굳게 믿는다. 진실이 주어진다면, 그들은 어떤 국가적 위기에도 대처할 수 있을 것이다. 중요한 점은 그들에게 진짜 진실과맥주를 가져다주는 것이다.',
-    'name': '에이브러햄 링컨'
-  },
-];
+import 'data.dart';
+import 'dart:io';
+// image.path는 위의 import 'dart:html' 문제였음
+import 'package:image_picker/image_picker.dart';
+import 'package:tflite/tflite.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key key}) : super(key: key);
+  const MainPage();
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+  final picker = ImagePicker();
+
+  File _image;
+  bool _loading = false;
+  List _output;
+
   var today_beer_name;
   var today_beer_dis;
   var today_beer_alcohol;
   var today_beer_image;
   var today_wise;
   var today_name;
+  var today_beer_type;
 
   @override
   void initState() {
-    var todayBeer = Random().nextInt(beer.length);
+    _loading = true;
+    loadModel().then((value) {});
+    var todayBeer =
+        Random().nextInt(beer.length); //추후, splash screen에서 random 설정
     today_beer_name = beer[todayBeer]['name'];
     today_beer_dis = beer[todayBeer]['dis'];
     today_beer_alcohol = beer[todayBeer]['alcohol'];
     today_beer_image = beer[todayBeer]['image'];
+    today_beer_type = beer[todayBeer]['type'];
 
     var todayWise = Random().nextInt(Wise.length);
     today_wise = Wise[todayWise]['wise'];
@@ -91,137 +53,370 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    Tflite.close();
+  }
+
+  pickImage() async {
+    PickedFile image = await picker.getImage(source: ImageSource.camera);
+    if (image == null) return null;
+    setState(() {
+      var name = image.path;
+      _image = File(image.path);
+    });
+    classifyImage(_image);
+  }
+
+  pickGalleryImage() async {
+    var image = await picker.getImage(source: ImageSource.gallery);
+    if (image == null) return null;
+    setState(() {
+      _image = File(image.path);
+    });
+    classifyImage(_image);
+  }
+
+  classifyImage(File image) async {
+    var output = await Tflite.runModelOnImage(
+        path: image.path,
+        numResults: 10,
+        threshold: 0.5,
+        imageMean: 0.0,
+        imageStd: 255.0);
+    setState(() {
+      _loading = false;
+      _output = output;
+    });
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/beer_model.tflite',
+      labels: 'assets/labels.txt',
+    );
+  }
+
+  void search_dialog(context) {
+    showDialog(
+      context: context,
+      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          //Dialog Main Title
+          title: Column(
+            children: const <Widget>[
+              Text("검색 방법"),
+            ],
+          ),
+          //
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ClipOval(
+                child: Material(
+                  color: Colors.blue,
+                  child: InkWell(
+                    splashColor: Colors.red,
+                    child: SizedBox(
+                        width: 56, height: 56, child: Icon(Icons.photo_camera)),
+                    onTap: () {
+                      pickImage();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(width: 50),
+              ClipOval(
+                child: Material(
+                  color: Colors.blue,
+                  child: InkWell(
+                    splashColor: Colors.red,
+                    child: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: Icon(Icons.photo_library)),
+                    onTap: () {
+                      pickGalleryImage();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void search_dialog2(context) {
+    showDialog(
+      context: context,
+      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          //Dialog Main Title
+          title: Column(
+            children: const <Widget>[
+              Text("어떤 방법을 택하시겠어요?"),
+            ],
+          ),
+          //
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                  child: Text("재촬영",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    pickImage();
+                    Navigator.pop(context);
+                  }),
+              TextButton(
+                  child: Text("갤러리 탐색",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    pickGalleryImage();
+                    Navigator.pop(context);
+                  }),
+              TextButton(
+                  child: Text("메인화면",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    setState(() {
+                      _loading = true;
+                    });
+                    Navigator.pop(context);
+                  }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                color: Colors.grey,
-                child: Column(
+          color: Colors.lightBlueAccent,
+          child: _loading
+              ? Column(
                   children: [
-                    SizedBox(height: 20),
-                    Text(
-                      "오늘의 맥주",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30,
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(width: 130),
+                              RichText(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
+                                strutStyle: StrutStyle(fontSize: 20),
+                                text: TextSpan(
+                                  text: "추천드리는 맥주",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25.0,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 60),
+                              IconButton(
+                                  icon: Icon(Icons.question_mark),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => setting()));
+                                  }),
+                            ],
+                          ),
+                          RichText(
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                            strutStyle: StrutStyle(fontSize: 20),
+                            text: TextSpan(
+                              text: "${today_beer_name}",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              SizedBox(width: 20),
+                              Text("${today_beer_alcohol}",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.normal)),
+                              SizedBox(width: 20),
+                              Text("맥주 구분 : ${today_beer_type}",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    Text("${today_beer_name}",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Text("${today_beer_alcohol}",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.normal)),
-                        SizedBox(width: 20),
-                        Text("용량",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.normal)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              child: Flexible(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: RichText(
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 5,
-                      strutStyle: StrutStyle(fontSize: 16.0),
-                      text: TextSpan(
-                          text:
-                              '세계문자 가운데 한글,즉 훈민정음은 흔히들 신비로운 문자라 부르곤 합니다. 그것은 세계 문자 가운데 유일하게 한글만이 그것을 만든 사람과 반포일을 알며, 글자를 만든 원리까지 알기 때문입니다.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            height: 1.4,
-                            fontSize: 16.0,
+                    Flexible(
+                      child: Container(
+                          color: Colors.cyan,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: RichText(
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 5,
+                                  strutStyle: StrutStyle(fontSize: 16.0),
+                                  text: TextSpan(
+                                      text: "${today_beer_dis}",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        height: 1.4,
+                                        fontSize: 16.0,
+                                      )),
+                                ),
+                              ),
+                              Image.asset("${today_beer_image}"),
+                            ],
                           )),
                     ),
-                  ),
-                  Image.asset("${today_beer_image}"),
-                ],
-              )),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25.0),
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: Column(
-                  children: [
-                    Text("Wise Saying"),
-                    Text('${Wise[0]['wise']}'),
+                    SizedBox(height: 20),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text("Wise-Saying",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20)),
+                          RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                            strutStyle: StrutStyle(fontSize: 16.0),
+                            text: TextSpan(
+                                text: "${today_wise}",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  height: 1.4,
+                                  fontSize: 16.0,
+                                )),
+                          ),
+                          SizedBox(height: 10),
+                          Text("${today_name}"),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(5.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          InkWell(
+                            child: Image.asset("assets/Search.png",
+                                width: 180, height: 180),
+                            onTap: () {
+                              search_dialog(context);
+                            },
+                          ),
+                          SizedBox(width: 20),
+                          InkWell(
+                            child: Image.asset("assets/Favourite.png",
+                                width: 180, height: 180),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Home()));
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
-            SizedBox(height: 50),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Expanded(
-                    child: InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Column(
-                          children: const [
-                            Icon(Icons.search),
-                            Text('Search'),
-                            Text('Search_discription'),
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Home()));
-                      },
+                )
+              : Column(
+                  //맥주 확인창 하나 만들어야함.
+                  children: [
+                    SizedBox(height: 40),
+                    Text("이 맥주가 맞나요?",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 40),
+                    Image.asset(
+                        "${beer[int.parse(_output[0]['label'])]['image']}",
+                        width: double.infinity,
+                        height: 300),
+                    SizedBox(height: 20),
+                    Text(
+                      "${beer[int.parse(_output[0]['label'])]['name']}",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Column(
-                          children: const [
-                            Icon(Icons.favorite),
-                            Text('Favourite'),
-                            Text('Favourite_discription'),
-                          ],
-                        ),
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.all(8.0),
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 10),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => detail(
+                                        int.parse(_output[0]['label']))));
+                                setState(() {
+                                  _loading = true;
+                                });
+                              },
+                              child: Text(
+                                "오 맞아요!",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                          SizedBox(width: 10),
+                          TextButton(
+                              onPressed: () {
+                                search_dialog2(context);
+                              },
+                              child: Text("쓰읍..아닌거같은데",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold))),
+                          SizedBox(width: 10),
+                        ],
                       ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Home()));
-                      },
                     ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+                  ],
+                )),
     );
   }
 }
