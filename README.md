@@ -1,16 +1,24 @@
 # hometanding
 
-SWengineer project
+SWengineer project : Alcohol Wiki
+
+Application Dev. Hyeon Jin Jeong.
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+Let's see is lib directory.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+You can see codes about every screens.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you want to see our application used module, See pubspec.yaml(?) file. 
+
+This will inform you that what we used module and brought images.
+
+Also, you can see our application SDK version in app/build_gradle(?) file.
+
+Our application should have downgraded flutter version because of tflite.
+
+So, if you want to treat with our application, you must downgraded flutter version. 
+
