@@ -68,27 +68,32 @@ class _AlcoholState extends State<Alcohol> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                      leading: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: 20,
-                            minWidth: 20,
-                            maxHeight: 40,
-                            maxWidth: 40,
-                          ),
-                          child: Image.asset("${beer[index]['image']}")),
-                      title: Text(items[index]), //
-                      subtitle: Text("${beer[index]['type']}"),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => detail(index)));
-                      });
-                }),
-          ),
+              child: GridView.count(
+            crossAxisCount: 2,
+            children: List.generate(items.length, (index) {
+              return InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: 150,
+                                maxWidth: 150,
+                              ),
+                              child: Image.asset("${beer[index]['image']}")),
+                          Text("${beer[index]['name']}")
+                        ],
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => detail(index)));
+                  });
+            }),
+          )),
         ],
       ),
     );

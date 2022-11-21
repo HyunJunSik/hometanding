@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,6 +38,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   http:
   url_launcher: ^6.1.2
+  google_fonts: ^2.1.1
+  wrapped_korean_text: ^0.0.1
+  fluttertoast: ^8.0.8
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +58,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+    - family: CustomIcons
+      fonts:
+        - asset: font/MyFlutterApp.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -72,17 +78,35 @@ flutter:
     - assets/Beer/guiness.png
     - assets/Beer/hoegarden.png
     - assets/Beer/Krombacher.png
-    - assets/Beer/bluemoon.jpg
+    - assets/Beer/bluemoon.png
     - assets/Beer/desperados.png
     - assets/Beer/edelweiss.png
-    - assets/Beer/heineken.jpg
-    - assets/Beer/indie.jpg
-    - assets/Beer/paulaner.jpg
-    - assets/Beer/plisner.jpg
-    - assets/Beer/somersby.jpg
-    - assets/Favourite.png
+    - assets/Beer/heineken.png
+    - assets/Beer/indie.png
+    - assets/Beer/paulaner.png
+    - assets/Beer/plisner.png
+    - assets/Beer/somersby.png
+    - assets/Beer/blanc.png
+    - assets/Beer/rose.png
+    - assets/Beer/miller.png
+    - assets/Beer/patagonia.png
+    - assets/Beer/stellar.png
+    - assets/Beer/tiger.png
+    - assets/Beer/tsing.png
+    - assets/alcohol_game.png
     - assets/Search.png
     - assets/mainicon.png
+    - assets/Food/kim.png
+    - assets/Food/hae.png
+    - assets/Food/du.png
+    - assets/Food/gam.png
+    - assets/Food/corn.jpg
+    - assets/Food/egg.jpg
+    - assets/Food/spam.jpg
+    - assets/Food/chi.jpg
+    - assets/wheel-6-300.png
+    - assets/roulette-8-300.png
+    - assets/roulette-center-300.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -94,11 +118,5 @@ flutter:
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
-font:
-  family: pretty
-  font:
-  - asset: font/DalseoDarling.ttf
-  - asset: font/DalseoHealingBold.ttf
-  - asset: font/DalseoHealingMedium.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

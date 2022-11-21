@@ -1,17 +1,16 @@
-import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hometanding/search_alcohol.dart';
 import 'package:hometanding/search_snack.dart';
+import 'package:hometanding/setting.dart';
+import 'Favour.dart';
 import 'MainPage.dart';
 import 'Splash_screen.dart';
 import 'data.dart';
-import 'home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'game.dart';
+import 'dart:io';
 
 var todayBeer = Random().nextInt(beer.length);
-var todayWise = Random().nextInt(Wise.length);
 void main() {
   runApp(MaterialApp(
     home: Splash(),
@@ -38,12 +37,14 @@ class Main extends StatefulWidget {
 }
 
 class MainState extends State<Main> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   static List<Widget> pages = <Widget>[
-    MainPage(todayBeer, todayWise),
     Alcohol(),
-    search_snack(),
+    Snack(),
+    MainPage(todayBeer),
+    favourite(),
+    setting(),
   ];
 
   void _onitemTap(int index) {
@@ -59,18 +60,82 @@ class MainState extends State<Main> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: '알콜사전'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: '안주사전'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onitemTap,
-      ),
-    );
+    return WillPopScope(
+        child: Scaffold(
+          body: pages[_selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: Colors.green,
+            unselectedItemColor: Colors.black,
+            showSelectedLabels: false,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.wine_bar,
+                  ),
+                  label: "alcohol"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.food_bank,
+                  ),
+                  label: "snack"),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.favorite,
+                  ),
+                  label: "favor"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.settings,
+                  ),
+                  label: "setting")
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onitemTap,
+          ),
+        ),
+        onWillPop: () => showExitPopup(context));
   }
+}
+
+Future<bool> showExitPopup(context) async {
+  return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Container(
+          height: 100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("정말로 종료하시겠습니까?"),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        exit(0);
+                      },
+                      child: Text("네"),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.shade800),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                      child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("아니요", style: TextStyle(color: Colors.black)),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                  )),
+                ],
+              ),
+            ],
+          ),
+        ));
+      });
 }

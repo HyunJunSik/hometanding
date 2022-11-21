@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:hometanding/Favour.dart';
-import 'package:hometanding/main.dart';
-import 'package:hometanding/setting.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math';
 import 'detail.dart';
-import 'home.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 // image.path는 위의 import 'dart:html' 문제였음
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
+import 'minigame.dart';
+
 class MainPage extends StatefulWidget {
   final int num;
-  final int num2;
-  const MainPage(this.num, this.num2);
+  const MainPage(this.num);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -27,13 +24,10 @@ class _MainPageState extends State<MainPage> {
   File _image;
   bool _loading = false;
   List _output;
-
   var today_beer_name;
-  var today_beer_dis;
+  var today_beer_hash;
   var today_beer_alcohol;
   var today_beer_image;
-  var today_wise;
-  var today_name;
   var today_beer_type;
 
   @override
@@ -42,14 +36,11 @@ class _MainPageState extends State<MainPage> {
     loadModel().then((value) {});
     var todayBeer = widget.num; //추후, splash screen에서 random 설정
     today_beer_name = beer[todayBeer]['name'];
-    today_beer_dis = beer[todayBeer]['dis'];
+    today_beer_hash = beer[todayBeer]['hash'];
     today_beer_alcohol = beer[todayBeer]['alcohol'];
     today_beer_image = beer[todayBeer]['image'];
     today_beer_type = beer[todayBeer]['type'];
-
-    var todayWise = widget.num2;
-    today_wise = Wise[todayWise]['wise'];
-    today_name = Wise[todayWise]['name'];
+    SnackBar warn = SnackBar(content: Text("잘못된 사진을 사용하였습니다. 다시 시도해주세요"));
 
     // TODO: implement initState
     super.initState();
@@ -89,7 +80,12 @@ class _MainPageState extends State<MainPage> {
         imageStd: 255.0);
     setState(() {
       _loading = false;
-      _output = output;
+      if (output.isEmpty) {
+        _loading = true;
+        print("yes");
+      } else {
+        _output = output;
+      }
     });
   }
 
@@ -100,56 +96,60 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  void showToast() {
+    Fluttertoast.showToast(
+        msg: "기본 토스트 메시지입니다!",
+        toastLength: Toast.LENGTH_LONG,
+        fontSize: 14,
+        backgroundColor: Colors.green);
+  }
+
   void search_dialog(context) {
     showDialog(
       context: context,
-      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+          backgroundColor: Colors.green,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          //Dialog Main Title
           title: Column(
             children: const <Widget>[
-              Text("검색 방법"),
+              Text(
+                "어떻게 검색하실건가요?",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
             ],
           ),
           //
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ClipOval(
-                child: Material(
-                  color: Colors.blue,
-                  child: InkWell(
-                    splashColor: Colors.red,
-                    child: SizedBox(
-                        width: 56, height: 56, child: Icon(Icons.photo_camera)),
-                    onTap: () {
-                      pickImage();
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
+              InkWell(
+                splashColor: Colors.red,
+                child: SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(Icons.photo_camera,
+                        size: 40, color: Colors.white)),
+                onTap: () {
+                  pickImage();
+                  Navigator.pop(context);
+                },
               ),
               SizedBox(width: 50),
-              ClipOval(
-                child: Material(
-                  color: Colors.blue,
-                  child: InkWell(
-                    splashColor: Colors.red,
-                    child: SizedBox(
-                        width: 56,
-                        height: 56,
-                        child: Icon(Icons.photo_library)),
-                    onTap: () {
-                      pickGalleryImage();
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
+              InkWell(
+                splashColor: Colors.red,
+                child: SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(Icons.photo_library,
+                        size: 40, color: Colors.white)),
+                onTap: () {
+                  pickGalleryImage();
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
@@ -165,13 +165,16 @@ class _MainPageState extends State<MainPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.green,
           // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           //Dialog Main Title
           title: Column(
             children: const <Widget>[
-              Text("어떤 방법을 택하시겠어요?"),
+              Text("어떤 방법을 택하시겠어요?",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
           //
@@ -181,7 +184,7 @@ class _MainPageState extends State<MainPage> {
               TextButton(
                   child: Text("재촬영",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   onPressed: () {
@@ -189,9 +192,9 @@ class _MainPageState extends State<MainPage> {
                     Navigator.pop(context);
                   }),
               TextButton(
-                  child: Text("갤러리 탐색",
+                  child: Text("갤러리",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   onPressed: () {
@@ -201,7 +204,7 @@ class _MainPageState extends State<MainPage> {
               TextButton(
                   child: Text("메인화면",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   onPressed: () {
@@ -220,144 +223,99 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF2DA30D),
+        title: Text("ㅇㅋㅇㅋ",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50)),
+        centerTitle: true,
+      ),
       body: Container(
-          color: Colors.lightBlueAccent,
           child: _loading
               ? Column(
                   children: [
                     Container(
                       width: double.infinity,
-                      color: Colors.grey,
                       child: Column(
                         children: [
-                          SizedBox(height: 20),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(width: 130),
                               RichText(
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 5,
                                 strutStyle: StrutStyle(fontSize: 20),
                                 text: TextSpan(
-                                  text: "추천드리는 맥주",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25.0,
-                                  ),
-                                ),
+                                    text: "Today's beer",
+                                    style: GoogleFonts.pacifico(
+                                        color: Colors.green, fontSize: 30)),
                               ),
-                              SizedBox(width: 60),
-                              IconButton(
-                                  icon: Icon(Icons.question_mark),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => setting()));
-                                  }),
                             ],
-                          ),
-                          RichText(
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            strutStyle: StrutStyle(fontSize: 20),
-                            text: TextSpan(
-                              text: "${today_beer_name}",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
                           ),
                           SizedBox(height: 10),
-                          Row(
-                            children: [
-                              SizedBox(width: 20),
-                              Text("${today_beer_alcohol}",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal)),
-                              SizedBox(width: 20),
-                              Text("맥주 구분 : ${today_beer_type}",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal)),
-                            ],
-                          ),
                         ],
                       ),
                     ),
-                    Flexible(
-                      child: Container(
-                          color: Colors.cyan,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: RichText(
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 5,
-                                  strutStyle: StrutStyle(fontSize: 16.0),
-                                  text: TextSpan(
-                                      text: "${today_beer_dis}",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        height: 1.4,
-                                        fontSize: 16.0,
-                                      )),
-                                ),
-                              ),
-                              Image.asset("${today_beer_image}"),
-                            ],
-                          )),
-                    ),
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text("Wise-Saying",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20)),
-                          RichText(
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            strutStyle: StrutStyle(fontSize: 16.0),
-                            text: TextSpan(
-                                text: "${today_wise}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  height: 1.4,
-                                  fontSize: 16.0,
-                                )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 210,
+                            maxWidth: 210,
                           ),
-                          SizedBox(height: 10),
-                          Text("${today_name}"),
-                        ],
-                      ),
+                          child: Image.asset("${today_beer_image}"),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("${today_beer_name}",
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold))
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("${today_beer_hash}",
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 14.0,
+                                fontStyle: FontStyle.italic))
+                      ],
+                    ),
+                    Divider(
+                      thickness: 5,
                     ),
                     Container(
                       padding: EdgeInsets.all(5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          InkWell(
-                            child: Image.asset("assets/Search.png",
-                                width: 180, height: 180),
-                            onTap: () {
-                              search_dialog(context);
-                            },
-                          ),
-                          SizedBox(width: 20),
-                          InkWell(
-                            child: Image.asset("assets/Favourite.png",
-                                width: 180, height: 180),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => favourite()));
-                            },
-                          ),
-                        ],
+                      child: IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            InkWell(
+                              child: Image.asset("assets/Search.png",
+                                  width: 160, height: 160),
+                              onTap: () {
+                                search_dialog(context);
+                              },
+                            ),
+                            VerticalDivider(
+                              thickness: 5,
+                            ),
+                            InkWell(
+                              child: Image.asset("assets/alcohol_game.png",
+                                  width: 160, height: 160),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => game()));
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -369,21 +327,24 @@ class _MainPageState extends State<MainPage> {
                     Text("이 맥주가 맞나요?",
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 40),
-                    Image.asset(
-                        "${beer[int.parse(_output[0]['label'])]['image']}",
-                        width: double.infinity,
-                        height: 300),
-                    SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints:
+                          BoxConstraints(maxWidth: 250, maxHeight: 250),
+                      child: Image.asset(
+                          "${beer[int.parse(_output[0]['label'])]['image']}",
+                          width: double.infinity,
+                          height: 300),
+                    ),
                     Text(
                       "${beer[int.parse(_output[0]['label'])]['name']}",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 20),
+                    Divider(
+                      thickness: 5,
+                    ),
                     Container(
                       padding: EdgeInsets.all(8.0),
-                      color: Colors.white,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -409,7 +370,7 @@ class _MainPageState extends State<MainPage> {
                               onPressed: () {
                                 search_dialog2(context);
                               },
-                              child: Text("쓰읍..아닌거같은데",
+                              child: Text("아닌거같아요..",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20,
@@ -417,6 +378,9 @@ class _MainPageState extends State<MainPage> {
                           SizedBox(width: 10),
                         ],
                       ),
+                    ),
+                    Divider(
+                      thickness: 5,
                     ),
                   ],
                 )),

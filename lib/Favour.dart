@@ -33,42 +33,51 @@ class _favouriteState extends State<favourite> {
           beer_items.length, (i) => "${beer_items[i]['name']}");
     });
     it.addAll(duplicateitems);
+    print(beer_items);
+    print(duplicateitems);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemCount: it.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                  leading: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: 20,
-                      minWidth: 20,
-                      maxHeight: 40,
-                      maxWidth: 40,
-                    ),
-                    child: Image.asset("${beer[index]['image']}"),
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(it[index]),
-                  ),
-                  subtitle: Text("${beer[index]['type']}"),
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => detail(index)));
-                  });
-            },
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF2DA30D),
+          title: Text(
+            "즐겨찾기",
           ),
         ),
-      ),
-    );
+        body: GridView.count(
+          crossAxisCount: 2,
+          children: List.generate(it.length, (index) {
+            return InkWell(
+                child: Card(
+                  elevation: 10,
+                  child: Column(
+                    children: <Widget>[
+                      ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxHeight: 150, maxWidth: 150),
+                          child: Image.asset("${beer_items[index]['image']}")),
+                      Text("${beer_items[index]['name']}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => detail(search(index))));
+                });
+          }),
+        ));
+  }
+
+  int search(int index) {
+    var name = beer_items[index]['name'];
+    for (int i = 0; i < beer.length; i++) {
+      if (name == beer[i]['name']) {
+        return i;
+      }
+    }
   }
 }

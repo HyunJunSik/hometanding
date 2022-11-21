@@ -9,13 +9,16 @@ class setting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Application Info")),
+      appBar: AppBar(
+        title: Text("Application Info"),
+        backgroundColor: Color(0xFF2DA30D),
+      ),
       body: Center(
         child: Column(
           children: <Widget>[
             SizedBox(height: 20),
             Text("소프트웨어 공학 8조", style: TextStyle(fontSize: 30)),
-            SizedBox(height: 20),
+            Divider(),
             ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: 20,
@@ -24,12 +27,16 @@ class setting extends StatelessWidget {
                   maxWidth: 150,
                 ),
                 child: Image.asset('assets/mainicon.png')),
+            Divider(),
             Text("프로젝트 : 알콜위키", style: TextStyle(fontSize: 20)),
+            Text("version 1.3 (11/22)", style: TextStyle(fontSize: 20)),
+            Divider(),
             TextButton(
               child: Text("click me if you want to see code",
                   style: TextStyle(fontSize: 20)),
               onPressed: _launchUrl,
             ),
+            Divider(),
           ],
         ),
       ),
