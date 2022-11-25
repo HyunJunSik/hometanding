@@ -24,7 +24,6 @@ class _AlcoholState extends State<Alcohol> {
 
   void filterSearchResult(String query) {
     List<String> dummySearchList = <String>[];
-    query = query.toLowerCase();
     dummySearchList.addAll(duplicateitems);
     if (query.isNotEmpty) {
       List<String> dummyListData = <String>[];
@@ -82,20 +81,30 @@ class _AlcoholState extends State<Alcohol> {
                                 maxHeight: 150,
                                 maxWidth: 150,
                               ),
-                              child: Image.asset("${beer[index]['image']}")),
-                          Text("${beer[index]['name']}")
+                              child: Image.asset(
+                                  "${beer[get_num(index)]['image']}")),
+                          Text("${beer[get_num(index)]['name']}")
                         ],
                       ),
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => detail(index)));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => detail(get_num(index))));
                   });
             }),
           )),
         ],
       ),
     );
+  }
+
+  int get_num(int index) {
+    var b = items[index];
+    for (int i = 0; i < beer.length; i++) {
+      if (b == beer[i]['name']) {
+        return i;
+      }
+    }
   }
 }

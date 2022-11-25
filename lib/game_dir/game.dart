@@ -4,63 +4,21 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hometanding/utils.dart';
 
-/// Returns a widget which displays a rotating image.
-/// This widget can be interacted with with drag gestures and could be used as a "fortune wheel".
-///
-/// Required arguments are dimensions and the image to be used as the wheel.
-///
-///     SpinningWheel(Image.asset('assets/images/wheel-6-300.png'), width: 310, height: 310,)
 class SpinningWheel extends StatefulWidget {
-  /// width used by the container with the image
   final double width;
-
-  /// height used by the container with the image
   final double height;
-
-  /// image that will be used as wheel
   final Image image;
-
-  /// number of equal divisions in the wheel
   final int dividers;
-
-  /// initial rotation angle from 0.0 to 2*pi
-  /// default is 0.0
   final double initialSpinAngle;
-
-  /// has to be higher than 0.0 (no resistance) and lower or equal to 1.0
-  /// default is 0.5
   final double spinResistance;
-
-  /// if true, the user can interact with the wheel while it spins
-  /// default is true
   final bool canInteractWhileSpinning;
-
-  /// will be rendered on top of the wheel and can be used to show a selector
   final Image secondaryImage;
-
-  /// x dimension for the secondaty image, if provided
-  /// if provided, has to be smaller than widget height
   final double secondaryImageHeight;
-
-  /// y dimension for the secondary image, if provided
-  /// if provided, has to be smaller than widget width
   final double secondaryImageWidth;
-
-  /// can be used to fine tune the position for the secondary image, otherwise it will be centered
   final double secondaryImageTop;
-
-  /// can be used to fine tune the position for the secondary image, otherwise it will be centered
   final double secondaryImageLeft;
-
-  /// callback function to be executed when the wheel selection changes
   final Function onUpdate;
-
-  /// callback function to be executed when the animation stops
   final Function onEnd;
-
-  /// Stream<double> used to trigger an animation
-  /// if triggered in an animation it will stop it, unless canInteractWhileSpinning is false
-  /// the parameter is a double for pixelsPerSecond in axis Y, which defaults to 8000.0 as a medium-high velocity
   final Stream shouldStartOrStop;
 
   SpinningWheel(
@@ -93,46 +51,18 @@ class _SpinningWheelState extends State<SpinningWheel>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation<double> _animation;
-
-  // we need to store if has the widget behaves differently depending on the status
-  // AnimationStatus _animationStatus = AnimationStatus.dismissed;
-
-  // it helps calculating the velocity based on position and pixels per second velocity and angle
   SpinVelocity _spinVelocity;
   NonUniformCircularMotion _motion;
-
-  // keeps the last local position on pan update
-  // we need it onPanEnd to calculate in which cuadrant the user was when last dragged
   Offset _localPositionOnPanUpdate;
-
-  // duration of the animation based on the initial velocity
   double _totalDuration = 0;
-
-  // initial velocity for the wheel when the user spins the wheel
   double _initialCircularVelocity = 0;
-
-  // angle for each divider: 2*pi / numberOfDividers
   double _dividerAngle;
-
-  // current (circular) distance (angle) covered during the animation
   double _currentDistance = 0;
-
-  // initial spin angle when the wheels starts the animation
   double _initialSpinAngle;
-
-  // dividider which is selected (positive y-coord)
   int _currentDivider;
-
-  // spining backwards
   bool _isBackwards;
-
-  // if the user drags outside the wheel, won't be able to get back in
   DateTime _offsetOutsideTimestamp;
-
-  // will be used to do transformations between global and local
   RenderBox _renderBox;
-
-  // subscription to the stream used to trigger an animation
   StreamSubscription _subscription;
 
   @override
@@ -345,14 +275,16 @@ class Roulette extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Color(0xffDDC3FF), elevation: 0.0),
-      backgroundColor: Color(0xffDDC3FF),
+      appBar: AppBar(
+        title: Text("지옥의 섯다"),
+        backgroundColor: Color(0xFF2DA30D),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SpinningWheel(
-              Image.asset('assets/roulette-8-300.png'),
+              Image.asset('assets/roulette.png'),
               width: 310,
               height: 310,
               initialSpinAngle: _generateRandomAngle(),
@@ -393,14 +325,14 @@ class RouletteScore extends StatelessWidget {
   final int selected;
 
   final Map<int, String> labels = {
-    1: '1000\$',
-    2: '400\$',
-    3: '800\$',
-    4: '7000\$',
-    5: '5000\$',
-    6: '300\$',
-    7: '2000\$',
-    8: '100\$',
+    1: '한 잔',
+    2: '두 잔',
+    3: '양 옆 한잔',
+    4: '왼쪽 한잔',
+    5: '두 잔',
+    6: '한 잔',
+    7: '오른쪽 한잔',
+    8: '통과',
   };
 
   RouletteScore(this.selected);

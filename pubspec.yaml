@@ -104,9 +104,11 @@ flutter:
     - assets/Food/egg.jpg
     - assets/Food/spam.jpg
     - assets/Food/chi.jpg
-    - assets/wheel-6-300.png
     - assets/roulette-8-300.png
     - assets/roulette-center-300.png
+    - assets/beer_search.png
+    - assets/snack_search.png
+    - assets/roulette.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

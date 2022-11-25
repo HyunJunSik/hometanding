@@ -33,8 +33,6 @@ class _favouriteState extends State<favourite> {
           beer_items.length, (i) => "${beer_items[i]['name']}");
     });
     it.addAll(duplicateitems);
-    print(beer_items);
-    print(duplicateitems);
   }
 
   @override

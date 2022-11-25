@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'detail.dart';
+import '../data.dart';
+import '../detail.dart';
+import '../game_dir/minigame.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'data.dart';
 import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 // image.path는 위의 import 'dart:html' 문제였음
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite/tflite.dart';
 
-import 'minigame.dart';
+import '../search_alcohol.dart';
+import '../search_snack.dart';
 
 class MainPage extends StatefulWidget {
   final int num;
@@ -82,7 +84,6 @@ class _MainPageState extends State<MainPage> {
       _loading = false;
       if (output.isEmpty) {
         _loading = true;
-        print("yes");
       } else {
         _output = output;
       }
@@ -226,7 +227,7 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: Color(0xFF2DA30D),
         title: Text("ㅇㅋㅇㅋ",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50)),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40)),
         centerTitle: true,
       ),
       body: Container(
@@ -251,7 +252,6 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
                         ],
                       ),
                     ),
@@ -260,8 +260,8 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxHeight: 210,
-                            maxWidth: 210,
+                            maxHeight: 180,
+                            maxWidth: 180,
                           ),
                           child: Image.asset("${today_beer_image}"),
                         )
@@ -273,7 +273,7 @@ class _MainPageState extends State<MainPage> {
                         Text("${today_beer_name}",
                             style: TextStyle(
                                 color: Colors.green,
-                                fontSize: 20.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold))
                       ],
                     ),
@@ -283,7 +283,7 @@ class _MainPageState extends State<MainPage> {
                         Text("${today_beer_hash}",
                             style: TextStyle(
                                 color: Colors.green,
-                                fontSize: 14.0,
+                                fontSize: 12.0,
                                 fontStyle: FontStyle.italic))
                       ],
                     ),
@@ -291,14 +291,13 @@ class _MainPageState extends State<MainPage> {
                       thickness: 5,
                     ),
                     Container(
-                      padding: EdgeInsets.all(5.0),
                       child: IntrinsicHeight(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             InkWell(
                               child: Image.asset("assets/Search.png",
-                                  width: 160, height: 160),
+                                  width: 120, height: 120),
                               onTap: () {
                                 search_dialog(context);
                               },
@@ -308,10 +307,41 @@ class _MainPageState extends State<MainPage> {
                             ),
                             InkWell(
                               child: Image.asset("assets/alcohol_game.png",
-                                  width: 160, height: 160),
+                                  width: 120, height: 120),
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => game()));
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      thickness: 5,
+                    ),
+                    Container(
+                      child: IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            InkWell(
+                              child: Image.asset("assets/beer_search.png",
+                                  width: 120, height: 120),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Alcohol()));
+                              },
+                            ),
+                            VerticalDivider(
+                              thickness: 5,
+                            ),
+                            InkWell(
+                              child: Image.asset("assets/snack_search.png",
+                                  width: 120, height: 120),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Snack()));
                               },
                             ),
                           ],

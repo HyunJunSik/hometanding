@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:hometanding/search_alcohol.dart';
 import 'package:hometanding/search_snack.dart';
 import 'package:hometanding/setting.dart';
-import 'Favour.dart';
-import 'MainPage.dart';
-import 'Splash_screen.dart';
-import 'data.dart';
-import 'game.dart';
+import '../Favour.dart';
+import '../Splash_screen.dart';
+import '../data.dart';
+import '../game_dir/game.dart';
 import 'dart:io';
+
+import 'MainPage.dart';
 
 var todayBeer = Random().nextInt(beer.length);
 void main() {
@@ -37,13 +38,11 @@ class Main extends StatefulWidget {
 }
 
 class MainState extends State<Main> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
 
   static List<Widget> pages = <Widget>[
-    Alcohol(),
-    Snack(),
-    MainPage(todayBeer),
     favourite(),
+    MainPage(todayBeer),
     setting(),
   ];
 
@@ -70,25 +69,15 @@ class MainState extends State<Main> {
             items: const [
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.wine_bar,
+                    Icons.star,
                   ),
-                  label: "alcohol"),
+                  label: "즐겨찾기"),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: "메인화면"),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.food_bank,
+                    Icons.info,
                   ),
-                  label: "snack"),
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.favorite,
-                  ),
-                  label: "favor"),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.settings,
-                  ),
-                  label: "setting")
+                  label: "INFO")
             ],
             currentIndex: _selectedIndex,
             onTap: _onitemTap,
@@ -119,7 +108,7 @@ Future<bool> showExitPopup(context) async {
                       },
                       child: Text("네"),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade800),
+                          backgroundColor: Colors.green),
                     ),
                   ),
                   SizedBox(width: 15),

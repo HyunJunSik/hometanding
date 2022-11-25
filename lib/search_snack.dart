@@ -83,20 +83,30 @@ class _SnackState extends State<Snack> {
                                 maxHeight: 150,
                                 maxWidth: 150,
                               ),
-                              child: Image.asset("${food[index]['image']}")),
-                          Text("${food[index]['name']}")
+                              child: Image.asset(
+                                  "${food[get_num(index)]['image']}")),
+                          Text("${food[get_num(index)]['name']}")
                         ],
                       ),
                     ),
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => snack_detail(index)));
+                        builder: (context) => snack_detail(get_num(index))));
                   });
             }),
           )),
         ],
       ),
     );
+  }
+
+  int get_num(int index) {
+    var b = items[index];
+    for (int i = 0; i < food.length; i++) {
+      if (b == food[i]['name']) {
+        return i;
+      }
+    }
   }
 }
