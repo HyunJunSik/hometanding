@@ -35,7 +35,7 @@ class _randomState extends State<random> {
         body: Center(
           child: Column(
             children: [
-              SizedBox(height: 100),
+              SizedBox(height: 70),
               Transform.rotate(
                 angle: pi,
                 child: Column(
@@ -52,7 +52,8 @@ class _randomState extends State<random> {
                             left: 80, right: 40, top: 30, bottom: 10),
                         child: Container(
                             child: Text(num2.toString(),
-                                style: TextStyle(fontSize: 30))),
+                                style: TextStyle(
+                                    fontSize: 30, color: Colors.green))),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -61,15 +62,17 @@ class _randomState extends State<random> {
                           _press2();
                         },
                         child: Text(
-                          "push",
-                          style: TextStyle(fontSize: 20, color: Colors.black),
+                          "누르세요!",
+                          style: TextStyle(fontSize: 25, color: Colors.purple),
                         )),
                   ],
                 ),
               ),
+              SizedBox(height: 30),
               Divider(
                 thickness: 5,
               ),
+              SizedBox(height: 30),
               Container(
                 height: 100,
                 width: 200,
@@ -80,7 +83,8 @@ class _randomState extends State<random> {
                 child: Padding(
                   padding:
                       EdgeInsets.only(left: 80, right: 40, top: 30, bottom: 10),
-                  child: Text(num1.toString(), style: TextStyle(fontSize: 30)),
+                  child: Text(num1.toString(),
+                      style: TextStyle(fontSize: 30, color: Colors.green)),
                 ),
               ),
               SizedBox(height: 20),
@@ -88,8 +92,8 @@ class _randomState extends State<random> {
                   onPressed: () {
                     _press1();
                   },
-                  child: Text("push",
-                      style: TextStyle(fontSize: 20, color: Colors.black))),
+                  child: Text("누르세요!",
+                      style: TextStyle(fontSize: 25, color: Colors.purple))),
             ],
           ),
         ));

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hometanding/main/main.dart';
+import 'package:hometanding/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data.dart';

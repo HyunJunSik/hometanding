@@ -17,37 +17,61 @@ class game extends StatelessWidget {
       body: Column(
         children: [
           Flexible(
-            child: InkWell(
-                child: Container(
-                  color: Colors.transparent,
-                  child: Center(child: Text("roulette")),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Roulette()));
-                }),
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: InkWell(
+                  child: Container(
+                    color: Colors.yellow,
+                    child: Center(
+                        child: Text("룰렛게임!",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold))),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Roulette()));
+                  }),
+            ),
           ),
           Flexible(
-            child: InkWell(
-                child: Container(
-                  color: Colors.transparent,
-                  child: Center(child: Text("random number")),
-                ),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => random()));
-                }),
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: InkWell(
+                  child: Container(
+                    color: Colors.greenAccent,
+                    child: Center(
+                        child: Text("지옥의 섯다",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold))),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => random()));
+                  }),
+            ),
           ),
           Flexible(
-            child: InkWell(
-                child: Container(
-                  color: Colors.transparent,
-                  child: Center(child: Text("quiz")),
-                ),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => quiz()));
-                }),
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: InkWell(
+                  child: Container(
+                    color: Colors.orangeAccent,
+                    child: Center(
+                        child: Text("알콜 골든벨!",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold))),
+                  ),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => quiz()));
+                  }),
+            ),
           ),
         ],
       ),

@@ -58,10 +58,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-  fonts:
-    - family: CustomIcons
-      fonts:
-        - asset: font/MyFlutterApp.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -77,7 +73,7 @@ flutter:
     - assets/Beer/carlsberg.png
     - assets/Beer/guiness.png
     - assets/Beer/hoegarden.png
-    - assets/Beer/Krombacher.png
+    - assets/Beer/Krombacker.png
     - assets/Beer/bluemoon.png
     - assets/Beer/desperados.png
     - assets/Beer/edelweiss.png
@@ -96,19 +92,23 @@ flutter:
     - assets/alcohol_game.png
     - assets/Search.png
     - assets/mainicon.png
-    - assets/Food/kim.png
-    - assets/Food/hae.png
-    - assets/Food/du.png
-    - assets/Food/gam.png
+    - assets/Food/kim.jpg
+    - assets/Food/hae.jpg
+    - assets/Food/du.jpg
+    - assets/Food/gam.jpg
     - assets/Food/corn.jpg
     - assets/Food/egg.jpg
     - assets/Food/spam.jpg
     - assets/Food/chi.jpg
-    - assets/roulette-8-300.png
+    - assets/Food/wing.jpg
+    - assets/Food/pig.jpg
+    - assets/Food/fish.jpg
+    - assets/Food/shun.jpg
     - assets/roulette-center-300.png
     - assets/beer_search.png
     - assets/snack_search.png
     - assets/roulette.png
+    - assets/lambda.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

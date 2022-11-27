@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:hometanding/search_alcohol.dart';
 import 'package:hometanding/search_snack.dart';
 import 'package:hometanding/setting.dart';
-import '../Favour.dart';
-import '../Splash_screen.dart';
-import '../data.dart';
-import '../game_dir/game.dart';
+import 'Favour.dart';
+import 'Splash_screen.dart';
+import 'data.dart';
+import 'game_dir/game.dart';
 import 'dart:io';
 
-import 'MainPage.dart';
+import 'main/MainPage.dart';
 
 var todayBeer = Random().nextInt(beer.length);
 void main() {

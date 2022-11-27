@@ -97,14 +97,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void showToast() {
-    Fluttertoast.showToast(
-        msg: "기본 토스트 메시지입니다!",
-        toastLength: Toast.LENGTH_LONG,
-        fontSize: 14,
-        backgroundColor: Colors.green);
-  }
-
   void search_dialog(context) {
     showDialog(
       context: context,
@@ -121,6 +113,9 @@ class _MainPageState extends State<MainPage> {
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
+              Text("(맥주 사진만 검색 가능합니다)",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
           //
@@ -260,8 +255,8 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxHeight: 180,
-                            maxWidth: 180,
+                            maxHeight: 160,
+                            maxWidth: 160,
                           ),
                           child: Image.asset("${today_beer_image}"),
                         )

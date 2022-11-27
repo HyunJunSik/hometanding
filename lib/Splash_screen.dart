@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import 'main/main.dart';
+import 'main.dart';
 
 class Splash extends StatefulWidget {
   @override

@@ -276,7 +276,7 @@ class Roulette extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("지옥의 섯다"),
+        title: Text("룰렛게임!"),
         backgroundColor: Color(0xFF2DA30D),
       ),
       body: Center(
@@ -306,7 +306,7 @@ class Roulette extends StatelessWidget {
             ),
             SizedBox(height: 30),
             TextButton(
-              child: Text("Start"),
+              child: Text("Start", style: TextStyle(fontSize: 25)),
               onPressed: () =>
                   _wheelNotifier.sink.add(_generateRandomVelocity()),
             )
@@ -316,7 +316,7 @@ class Roulette extends StatelessWidget {
     );
   }
 
-  double _generateRandomVelocity() => (Random().nextDouble() * 6000) + 4000;
+  double _generateRandomVelocity() => (Random().nextDouble() * 5000) + 10000;
 
   double _generateRandomAngle() => Random().nextDouble() * pi * 2;
 }
@@ -340,6 +340,7 @@ class RouletteScore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text('${labels[selected]}',
-        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 24.0));
+        style: TextStyle(
+            fontStyle: FontStyle.italic, fontSize: 24.0, color: Colors.green));
   }
 }

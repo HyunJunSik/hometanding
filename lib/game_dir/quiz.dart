@@ -1,5 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wrapped_korean_text/wrapped_korean_text.dart';
+
+import 'gamedata.dart';
+import 'minigame.dart';
 
 class quiz extends StatefulWidget {
   const quiz({Key key}) : super(key: key);
@@ -9,15 +15,14 @@ class quiz extends StatefulWidget {
 }
 
 class _quizState extends State<quiz> {
-  int answer = 1;
+  int answer;
   var question;
   var prob1;
   var prob2;
   var prob3;
   var prob4;
-
   _select(int num) async {
-    if (num == answer) {
+    if (num == answer || answer == 0) {
       answer_dialog(context);
     } else {
       false_dialog(context);
@@ -25,7 +30,15 @@ class _quizState extends State<quiz> {
   }
 
   _load() async {
-    setState(() {});
+    var q = Random().nextInt(quest.length);
+    setState(() {
+      question = quest[q]['problem'];
+      prob1 = quest[q]['prob1'];
+      prob2 = quest[q]['prob2'];
+      prob3 = quest[q]['prob3'];
+      prob4 = quest[q]['prob4'];
+      answer = quest[q]['answer'];
+    });
   }
 
   @override
@@ -46,8 +59,27 @@ class _quizState extends State<quiz> {
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(onPressed: () {}, child: Text("계속 풀기")),
-                  TextButton(onPressed: () {}, child: Text("그만풀기")),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _load();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("계속 풀기"),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                      child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("그만풀기", style: TextStyle(color: Colors.black)),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                  )),
                 ],
               ));
         });
@@ -59,20 +91,42 @@ class _quizState extends State<quiz> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("오답", style: TextStyle(fontSize: 30)),
+            title: Text("땡! 오답입니당", style: TextStyle(fontSize: 25)),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             content: Container(
               width: 100,
-              height: 100,
+              height: 80,
               child: Column(
                 children: [
-                  Text("정답은 $answer"),
+                  Text("정답은 $answer번 입니다!",
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 20)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(onPressed: () {}, child: Text("계속 풀기")),
-                      TextButton(onPressed: () {}, child: Text("그만풀기")),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _load();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("계속 풀기"),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                          child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child:
+                            Text("그만풀기", style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white),
+                      )),
                     ],
                   )
                 ],
@@ -85,19 +139,26 @@ class _quizState extends State<quiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Quiz")),
+      appBar: AppBar(
+        title: Text("알콜 골든벨!"),
+        backgroundColor: Color(0xFF2DA30D),
+      ),
       body: Column(
         children: [
+          SizedBox(height: 40),
           Container(
-            height: 200,
+            height: 150,
             width: 400,
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(15.0)),
             child: Center(
-                child: Text("다음 중 국산 맥주가 아닌 것은?",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+                child: Text(question,
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic))),
           ),
           Divider(
             thickness: 5,
@@ -118,10 +179,11 @@ class _quizState extends State<quiz> {
                               border: Border.all(color: Colors.grey),
                             ),
                             child: Center(
-                                child: Text("1번 카스",
+                                child: Text(prob1,
                                     style: TextStyle(
+                                        color: Colors.orange,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20))),
+                                        fontSize: 15))),
                           ),
                           onTap: () {
                             _select(1);
@@ -135,10 +197,11 @@ class _quizState extends State<quiz> {
                               border: Border.all(color: Colors.grey),
                             ),
                             child: Center(
-                                child: Text("2번 하이트",
+                                child: Text(prob2,
                                     style: TextStyle(
+                                        color: Colors.blue,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20))),
+                                        fontSize: 15))),
                           ),
                           onTap: () {
                             _select(2);
@@ -156,10 +219,11 @@ class _quizState extends State<quiz> {
                               border: Border.all(color: Colors.grey),
                             ),
                             child: Center(
-                                child: Text("3번 테라",
+                                child: Text(prob3,
                                     style: TextStyle(
+                                        color: Colors.deepOrange,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20))),
+                                        fontSize: 15))),
                           ),
                           onTap: () {
                             _select(3);
@@ -173,10 +237,11 @@ class _quizState extends State<quiz> {
                               border: Border.all(color: Colors.grey),
                             ),
                             child: Center(
-                                child: Text("4번 타이거",
+                                child: Text(prob4,
                                     style: TextStyle(
+                                        color: Colors.green,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20))),
+                                        fontSize: 15))),
                           ),
                           onTap: () {
                             _select(4);
