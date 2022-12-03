@@ -38,11 +38,12 @@ class Main extends StatefulWidget {
 }
 
 class MainState extends State<Main> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
+  DateTime currentBackPressTime;
 
   static List<Widget> pages = <Widget>[
-    favourite(),
     MainPage(todayBeer),
+    favourite(),
     setting(),
   ];
 
@@ -60,71 +61,43 @@ class MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        child: Scaffold(
-          body: pages[_selectedIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.green,
-            unselectedItemColor: Colors.black,
-            showSelectedLabels: false,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.star,
-                  ),
-                  label: "즐겨찾기"),
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "메인화면"),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.info,
-                  ),
-                  label: "INFO")
-            ],
-            currentIndex: _selectedIndex,
-            onTap: _onitemTap,
-          ),
+      child: Scaffold(
+        body: pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.green,
+          unselectedItemColor: Colors.black,
+          showSelectedLabels: false,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "메인화면"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.star,
+                ),
+                label: "즐겨찾기"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.info,
+                ),
+                label: "INFO")
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onitemTap,
         ),
-        onWillPop: () => showExitPopup(context));
+      ),
+      onWillPop: onWillPop,
+    );
   }
-}
 
-Future<bool> showExitPopup(context) async {
-  return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            content: Container(
-          height: 100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("정말로 종료하시겠습니까?"),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        exit(0);
-                      },
-                      child: Text("네"),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                      child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("아니요", style: TextStyle(color: Colors.black)),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                  )),
-                ],
-              ),
-            ],
-          ),
-        ));
-      });
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      const _msg = '뒤로 버튼을 한 번 더 누르시면 종료됩니다.';
+      const snackBar = SnackBar(content: Text(_msg));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
 }

@@ -49,8 +49,8 @@ class _randomState extends State<random> {
                       ),
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: 80, right: 40, top: 30, bottom: 10),
-                        child: Container(
+                            left: 80, right: 80, top: 10, bottom: 10),
+                        child: Center(
                             child: Text(num2.toString(),
                                 style: TextStyle(
                                     fontSize: 30, color: Colors.green))),
@@ -82,9 +82,11 @@ class _randomState extends State<random> {
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsets.only(left: 80, right: 40, top: 30, bottom: 10),
-                  child: Text(num1.toString(),
-                      style: TextStyle(fontSize: 30, color: Colors.green)),
+                      EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
+                  child: Center(
+                    child: Text(num1.toString(),
+                        style: TextStyle(fontSize: 30, color: Colors.green)),
+                  ),
                 ),
               ),
               SizedBox(height: 20),

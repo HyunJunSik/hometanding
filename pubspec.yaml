@@ -68,7 +68,6 @@ flutter:
     - assets/91044-cheers.json
     - assets/labels.txt
     - assets/beer_model.tflite
-    - assets/
     - assets/Beer/applefox.png
     - assets/Beer/carlsberg.png
     - assets/Beer/guiness.png
